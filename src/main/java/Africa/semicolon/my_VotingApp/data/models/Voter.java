@@ -22,9 +22,11 @@ public class Voter {
     private String phoneNumber;
     private String NIN;
     private String VIN;
+    @Enumerated(value = EnumType.STRING)
     private Gender gender;
     @OneToOne
     private Address address;
     private String password;
     private String votersImage;
+    private String createdAt;
 }
