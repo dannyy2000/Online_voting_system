@@ -5,11 +5,17 @@ import Africa.semicolon.my_VotingApp.data.dto.response.VoterRegisterResponse;
 import Africa.semicolon.my_VotingApp.data.models.Voter;
 import Africa.semicolon.my_VotingApp.data.repositories.VoteRepository;
 import Africa.semicolon.my_VotingApp.data.repositories.VotersRepository;
+import Africa.semicolon.my_VotingApp.exception.VotersServiceException;
 import Africa.semicolon.my_VotingApp.mapper.VotersMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -48,21 +54,44 @@ public class VotersServiceImpl implements VotersService{
 
     @Override
     public Voter getVoterById(Long votersId) {
-        return null;
+        return votersRepository.findById(votersId).orElseThrow(()->
+                new VotersServiceException("Voter does not exist"));
     }
 
     @Override
     public Voter updateVoter(Long votersId, JsonPatch uploadPayLoad) {
-        return null;
+        ObjectMapper objectMapper = new ObjectMapper();
+        Voter voter = getVoterById(votersId);
+
+        JsonNode node = objectMapper.convertValue(voter, JsonNode.class);
+
+        try{
+            JsonNode updatedNode = uploadPayLoad.apply(node);
+            var updatedVoter = objectMapper.convertValue(updatedNode, Voter.class);
+             updatedVoter = votersRepository.save(updatedVoter);
+             return updatedVoter;
+        } catch (JsonPatchException e) {
+            log.error(e.getMessage());
+            throw new RuntimeException();
+        }
     }
 
     @Override
     public Page<Voter> getAllVoters(int pageNumber) {
-        return null;
+        if(pageNumber < 1){
+            pageNumber = 0;
+        }
+        else{
+           pageNumber = pageNumber - 1;
+        }
+        Pageable pageable = PageRequest.of(pageNumber,NUMBER_OF_ITEMS_PER_PAGE);
+        return votersRepository.findAll(pageable);
     }
 
     @Override
-    public void deleteVoter(Long VotersId) {
-
+    public void deleteVoter(Long votersId) {
+         votersRepository.deleteById(votersId);
     }
+
+
 }

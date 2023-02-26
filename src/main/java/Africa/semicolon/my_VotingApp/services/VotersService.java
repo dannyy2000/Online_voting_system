@@ -16,5 +16,5 @@ public interface VotersService {
 
   Page<Voter> getAllVoters(int pageNumber);
 
-  void deleteVoter(Long VotersId);
+  void deleteVoter(Long votersId);
 }

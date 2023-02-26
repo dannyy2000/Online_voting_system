@@ -1,7 +1,7 @@
 package Africa.semicolon.my_VotingApp.data.dto.request;
 
 import Africa.semicolon.my_VotingApp.data.models.Gender;
-import jakarta.persistence.Entity;
+
 import lombok.*;
 
 @AllArgsConstructor
