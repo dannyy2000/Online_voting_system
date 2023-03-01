@@ -1,5 +1,6 @@
 package Africa.semicolon.my_VotingApp.data.models;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,8 +21,8 @@ public class Election {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
-    @OneToMany
+    private String startDate;
+    private String endDate;
+    @OneToMany(cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
     private Set<Candidate> candidates;
 }

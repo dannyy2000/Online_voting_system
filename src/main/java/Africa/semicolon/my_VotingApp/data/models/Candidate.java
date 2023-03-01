@@ -15,10 +15,10 @@ import lombok.Setter;
 public class Candidate {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+   @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
     private String party;
-    @ManyToOne
-    private Election election;
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    private Election election;
 }

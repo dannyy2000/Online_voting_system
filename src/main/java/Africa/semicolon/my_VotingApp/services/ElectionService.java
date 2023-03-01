@@ -1,11 +1,12 @@
 package Africa.semicolon.my_VotingApp.services;
 
 import Africa.semicolon.my_VotingApp.data.dto.request.CreateElectionRequest;
+import Africa.semicolon.my_VotingApp.data.dto.response.ElectionDto;
 import Africa.semicolon.my_VotingApp.data.models.Election;
 
 public interface ElectionService {
 
-     Election createElection(CreateElectionRequest createElectionRequest);
+     ElectionDto createElection(CreateElectionRequest createElectionRequest);
 
      Election addElection(CreateElectionRequest createElectionRequest);
 
