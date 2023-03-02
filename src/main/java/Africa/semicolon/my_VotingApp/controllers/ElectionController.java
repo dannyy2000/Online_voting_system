@@ -1,5 +1,6 @@
 package Africa.semicolon.my_VotingApp.controllers;
 
+import Africa.semicolon.my_VotingApp.data.dto.request.CandidateCreateRequest;
 import Africa.semicolon.my_VotingApp.data.dto.request.CreateElectionRequest;
 import Africa.semicolon.my_VotingApp.data.dto.response.ElectionDto;
 import Africa.semicolon.my_VotingApp.data.models.Election;
@@ -25,6 +26,13 @@ public class ElectionController {
     @GetMapping("{electionId}")
     public ResponseEntity<?> getElectionById(@PathVariable Long electionId){
         Election election = electionService.getElectionById(electionId);
-        return ResponseEntity.status(HttpStatus.OK).body(election);
+        return ResponseEntity.status(HttpStatus.FOUND).body(election);
+    }
+
+    @PutMapping("{Id}")
+    public ResponseEntity<?>updateElection(@PathVariable Long Id, @RequestBody CreateElectionRequest
+    createElectionRequest,@RequestBody CandidateCreateRequest candidateCreateRequest){
+        Election election = electionService.updateElection(Id,createElectionRequest,candidateCreateRequest);
+        return new ResponseEntity<>(election,HttpStatus.CREATED);
     }
 }

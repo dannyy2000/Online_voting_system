@@ -7,21 +7,22 @@ import Africa.semicolon.my_VotingApp.data.models.Candidate;
 import Africa.semicolon.my_VotingApp.data.models.Election;
 import Africa.semicolon.my_VotingApp.data.repositories.CandidateRepository;
 import Africa.semicolon.my_VotingApp.data.repositories.ElectionRepository;
+import Africa.semicolon.my_VotingApp.exception.CandidateServiceException;
 import Africa.semicolon.my_VotingApp.exception.ElectionServiceException;
 import Africa.semicolon.my_VotingApp.mapper.ElectionMapper;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
 @AllArgsConstructor
 @Slf4j
-public class ElectionServiceImpl implements ElectionService{
+public class ElectionServiceImpl implements ElectionService {
     private final ElectionRepository electionRepository;
     private final CandidateRepository candidateRepository;
 
@@ -33,10 +34,8 @@ public class ElectionServiceImpl implements ElectionService{
             Candidate candidate = new Candidate();
             candidate.setName(candidateCreateRequest.getName());
             candidate.setParty(candidateCreateRequest.getParty());
-//            candidate.setElection(election);
+            candidateRepository.save(candidate);
             candidates.add(candidate);
-//            candidateRepository.save(candidate);
-
             election.setCandidates(candidates);
             election = electionRepository.save(election);
 
@@ -57,20 +56,40 @@ public class ElectionServiceImpl implements ElectionService{
         return electionDto;
     }
 
-    @Override
-    public Election addElection(CreateElectionRequest createElectionRequest) {
-        return null;
-    }
 
     @Override
     public Election getElectionById(Long electionId) {
-        return electionRepository.findById(electionId).orElseThrow(()->
-            new ElectionServiceException(String.format("Election with id %d,does not exists",electionId)));
+        return electionRepository.findById(electionId).orElseThrow(() ->
+                new ElectionServiceException(String.format("Election with id %d,does not exists", electionId)));
     }
 
     @Override
-    public Election updateElection(Long id, CreateElectionRequest createElectionRequest) {
-        return null;
+    public Election updateElection(Long electionId, CreateElectionRequest createElectionRequest,
+                                   CandidateCreateRequest candidateCreateRequest) {
+        Optional<Election> optionalElection = electionRepository.findById(electionId);
+        if (optionalElection.isEmpty()) {
+            throw new ElectionServiceException(String.format("Election with id %d,does not exists", electionId));
+        }
+        Election updatedElection = optionalElection.get();
+        updatedElection.setName(createElectionRequest.getName());
+        updatedElection.setEndDate(String.valueOf(LocalDate.of(2023, 3, 20)));
+        updatedElection.setStartDate(String.valueOf(LocalDate.of(2023, 3, 1)));
+
+        Set<Candidate> candidates = new HashSet<>();
+        for (Candidate candidate : updatedElection.getCandidates()) {
+            Long candidateId = candidate.getId();
+            Optional<Candidate> optionalCandidate = candidateRepository.findById(candidateId);
+            if (optionalCandidate.isPresent()) {
+                Candidate updatedCandidate = optionalCandidate.get();
+                updatedCandidate.setName(candidateCreateRequest.getName());
+                updatedCandidate.setParty(candidateCreateRequest.getParty());
+                candidateRepository.save(candidate);
+                candidates.add(updatedCandidate);
+                updatedElection.setCandidates(candidates);
+                electionRepository.save(updatedElection);
+            }else throw new CandidateServiceException(String.format("Candidate with id %d,does not exists",candidateId));
+        }
+        return updatedElection;
     }
 
     @Override
@@ -78,3 +97,5 @@ public class ElectionServiceImpl implements ElectionService{
 
     }
 }
+
+
