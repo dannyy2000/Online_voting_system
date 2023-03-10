@@ -1,5 +1,6 @@
 package Africa.semicolon.my_VotingApp.data.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,9 +17,9 @@ public class Candidate {
 
     @Id
    @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonIgnore
     private Long id;
     private String name;
     private String party;
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    private Election election;
+
 }

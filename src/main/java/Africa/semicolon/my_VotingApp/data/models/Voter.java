@@ -1,5 +1,7 @@
 package Africa.semicolon.my_VotingApp.data.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,10 +13,12 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Voter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
     private String firstName;
     private String lastName;
@@ -26,7 +30,8 @@ public class Voter {
     private Gender gender;
     @OneToOne
     private Address address;
+    @JsonIgnore
     private String password;
+    @JsonIgnore
     private String votersImage;
-    private String createdAt;
 }

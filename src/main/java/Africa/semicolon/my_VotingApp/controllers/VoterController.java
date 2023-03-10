@@ -1,32 +1,38 @@
 package Africa.semicolon.my_VotingApp.controllers;
 
-import Africa.semicolon.my_VotingApp.data.dto.request.VoterRegisterRequest;
-import Africa.semicolon.my_VotingApp.data.dto.response.VoterRegisterResponse;
+import Africa.semicolon.my_VotingApp.data.dto.request.VoterRequestDto;
+import Africa.semicolon.my_VotingApp.data.dto.response.VoterResponseDto;
 import Africa.semicolon.my_VotingApp.services.VotersService;
-import com.github.fge.jsonpatch.JsonPatch;
+import Africa.semicolon.my_VotingApp.utils.ApiResponse;
 import lombok.AllArgsConstructor;
 //import lombok.var;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.ZonedDateTime;
+
 @RestController
-@RequestMapping("api/v1/voters")
+@Slf4j
+@RequestMapping("/api/v1/voters")
 @AllArgsConstructor
 public class VoterController {
 
     private final VotersService votersService;
 
-    @PostMapping
-    public ResponseEntity<?> register(@RequestBody VoterRegisterRequest voterRegisterRequest){
-        VoterRegisterResponse voterRegisterResponse = votersService.register(voterRegisterRequest);
-        return ResponseEntity.status(voterRegisterResponse.getCode()).body(voterRegisterResponse);
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody VoterRequestDto voterRegisterRequest) {
+        log.info("Received voter registration request: {}", voterRegisterRequest);
+        VoterResponseDto voterResponseDto = votersService.register(voterRegisterRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(voterResponseDto);
     }
+
 
     @GetMapping("{votersId}")
     public ResponseEntity<?> getVotersById(@PathVariable Long votersId){
-        var voter = votersService.getVoterById(votersId);
-        return ResponseEntity.status(HttpStatus.OK).body(voter);
+        VoterResponseDto voterResponseDto = votersService.getVoterById(votersId);
+        return ResponseEntity.status(HttpStatus.OK).body(voterResponseDto);
     }
 
     @GetMapping("/all/{pageNumber}")
@@ -35,14 +41,12 @@ public class VoterController {
         return ResponseEntity.ok(voter.getContent());
     }
 
-    @PatchMapping(value = "{votersId}",consumes = "application/json-patch+json")
-    public ResponseEntity<?> updateVoters(@PathVariable Long votersId, @RequestBody JsonPatch updatePatch){
-        try{
-            var voter = votersService.updateVoter(votersId,updatePatch);
-            return ResponseEntity.status(HttpStatus.OK).body(voter);
-        }catch (Exception exception){
-            return ResponseEntity.badRequest().body(exception.getMessage());
-        }
+    @PutMapping("{votersId}")
+    public ResponseEntity<?>updateVoters(@PathVariable Long votersId,@RequestBody VoterRequestDto voterUpdateRequest){
+        log.info("Received voter update request: {}", voterUpdateRequest);
+        VoterResponseDto voterResponseDto = votersService.updateVoter(votersId, voterUpdateRequest);
+
+        return ResponseEntity.status(HttpStatus.OK).body(voterResponseDto);
     }
 
     @DeleteMapping("{votersId}")

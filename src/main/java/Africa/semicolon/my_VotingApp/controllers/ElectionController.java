@@ -1,10 +1,10 @@
 package Africa.semicolon.my_VotingApp.controllers;
 
-import Africa.semicolon.my_VotingApp.data.dto.request.CandidateCreateRequest;
-import Africa.semicolon.my_VotingApp.data.dto.request.CreateElectionRequest;
-import Africa.semicolon.my_VotingApp.data.dto.response.ElectionDto;
+import Africa.semicolon.my_VotingApp.data.dto.request.ElectionRequestDto;
+import Africa.semicolon.my_VotingApp.data.dto.response.ElectionDtoResponse;
 import Africa.semicolon.my_VotingApp.data.models.Election;
 import Africa.semicolon.my_VotingApp.services.ElectionService;
+import com.github.fge.jsonpatch.JsonPatch;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,21 +18,26 @@ public class ElectionController {
     private final ElectionService electionService;
 
     @PostMapping("create")
-    public ResponseEntity<?> createElection(@RequestBody CreateElectionRequest createElectionRequest){
-        ElectionDto electionDto = electionService.createElection(createElectionRequest);
+    public ResponseEntity<?> createElection(@RequestBody ElectionRequestDto createElectionRequest){
+        ElectionDtoResponse electionDto = electionService.createElection(createElectionRequest);
         return new ResponseEntity<>(electionDto, HttpStatus.CREATED);
     }
 
     @GetMapping("{electionId}")
     public ResponseEntity<?> getElectionById(@PathVariable Long electionId){
-        Election election = electionService.getElectionById(electionId);
+        ElectionDtoResponse election = electionService.getElectionById(electionId);
         return ResponseEntity.status(HttpStatus.FOUND).body(election);
     }
 
-    @PutMapping("{Id}")
-    public ResponseEntity<?>updateElection(@PathVariable Long Id, @RequestBody CreateElectionRequest
-    createElectionRequest,@RequestBody CandidateCreateRequest candidateCreateRequest){
-        Election election = electionService.updateElection(Id,createElectionRequest,candidateCreateRequest);
-        return new ResponseEntity<>(election,HttpStatus.CREATED);
-    }
+   @PatchMapping(value = "{electionId}", consumes = "application/json-patch+json")
+    public ResponseEntity<?> updateElection(@PathVariable Long electionId, @RequestBody JsonPatch updatePatch){
+        try {
+            ElectionDtoResponse electionDtoResponse = electionService.updateElection(electionId,updatePatch);
+            return ResponseEntity.status(HttpStatus.OK).body(electionDtoResponse);
+
+        }catch (Exception exception){
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        }
+
+   }
 }

@@ -1,5 +1,6 @@
 package Africa.semicolon.my_VotingApp.data.dto.request;
 
+import Africa.semicolon.my_VotingApp.data.models.Address;
 import Africa.semicolon.my_VotingApp.data.models.Gender;
 
 import lombok.*;
@@ -10,12 +11,12 @@ import lombok.*;
 @Setter
 @Builder
 
-public class VoterRegisterRequest {
-
+public class VoterRequestDto {
     private String firstName;
     private String lastName;
     private String email;
     private String phoneNumber;
     private Gender gender;
+    private Address address;
 
 }

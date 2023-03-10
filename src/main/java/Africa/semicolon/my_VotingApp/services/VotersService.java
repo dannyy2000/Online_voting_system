@@ -1,18 +1,20 @@
 package Africa.semicolon.my_VotingApp.services;
 
-import Africa.semicolon.my_VotingApp.data.dto.request.VoterRegisterRequest;
-import Africa.semicolon.my_VotingApp.data.dto.response.VoterRegisterResponse;
+import Africa.semicolon.my_VotingApp.data.dto.request.VoterRequestDto;
+import Africa.semicolon.my_VotingApp.data.dto.response.VoterResponseDto;
 import Africa.semicolon.my_VotingApp.data.models.Voter;
-import com.github.fge.jsonpatch.JsonPatch;
 import org.springframework.data.domain.Page;
 
 public interface VotersService {
 
-  VoterRegisterResponse register(VoterRegisterRequest voterRegisterRequest);
+  VoterResponseDto register(VoterRequestDto voterRegisterRequest);
 
-  Voter getVoterById(Long votersId);
+  VoterResponseDto getVoterById(Long votersId);
+//
+//  Voter updateVoter(Long votersId, JsonPatch uploadPayLoad);
 
-  Voter updateVoter(Long votersId, JsonPatch uploadPayLoad);
+  VoterResponseDto updateVoter(Long votersId, VoterRequestDto voterRegisterRequest);
+
 
   Page<Voter> getAllVoters(int pageNumber);
 
