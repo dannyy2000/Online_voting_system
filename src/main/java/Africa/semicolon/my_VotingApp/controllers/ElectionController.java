@@ -2,7 +2,6 @@ package Africa.semicolon.my_VotingApp.controllers;
 
 import Africa.semicolon.my_VotingApp.data.dto.request.ElectionRequestDto;
 import Africa.semicolon.my_VotingApp.data.dto.response.ElectionDtoResponse;
-import Africa.semicolon.my_VotingApp.data.models.Election;
 import Africa.semicolon.my_VotingApp.services.ElectionService;
 import com.github.fge.jsonpatch.JsonPatch;
 import lombok.AllArgsConstructor;
