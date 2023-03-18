@@ -7,10 +7,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PostResponseDto {
+public class UpdatePostResponseDto {
     private Long id;
     private String message;
-    private int code;
     private boolean isSuccessful;
-
 }

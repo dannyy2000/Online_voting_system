@@ -12,7 +12,7 @@
 //public class GlobalExceptionHandler {
 //    @ExceptionHandler(GeneralServiceException.class)
 //    public ResponseEntity<ApiResponse> generalServiceException(GeneralServiceException generalServiceException){
-//        ApiResponse apiResponse = ApiResponse.builder()
+       // ApiResponse apiResponse = ApiResponse.builder()
 //                .time(ZonedDateTime.now())
 //                .statusCode(HttpStatus.CONFLICT.value())
 //                .data(generalServiceException.getMessage())

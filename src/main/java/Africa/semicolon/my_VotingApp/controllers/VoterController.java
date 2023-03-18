@@ -32,7 +32,7 @@ public class VoterController {
     @GetMapping("{votersId}")
     public ResponseEntity<?> getVotersById(@PathVariable Long votersId){
         VoterResponseDto voterResponseDto = votersService.getVoterById(votersId);
-        return ResponseEntity.status(HttpStatus.OK).body(voterResponseDto);
+        return ResponseEntity.status(HttpStatus.FOUND).body(voterResponseDto);
     }
 
     @GetMapping("/all/{pageNumber}")

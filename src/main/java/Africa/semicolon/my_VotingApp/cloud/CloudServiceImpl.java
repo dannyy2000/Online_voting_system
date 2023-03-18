@@ -26,7 +26,7 @@ public class CloudServiceImpl implements CloudService {
                     log.info("response::{}",response);
                     return response.get("url").toString();
         } catch (IOException e) {
-            throw new ImageUploadException(e.getMessage());
+            throw new ImageUploadException(e.getMessage() );
         }
     }
 }
