@@ -1,6 +1,8 @@
 package Africa.semicolon.my_VotingApp.services.Implementation;
 
+import Africa.semicolon.my_VotingApp.data.dto.request.CountVotesRequestDto;
 import Africa.semicolon.my_VotingApp.data.dto.request.VoteRequestDto;
+import Africa.semicolon.my_VotingApp.data.dto.response.CountVotesResponseDto;
 import Africa.semicolon.my_VotingApp.data.dto.response.VoteResponseDto;
 import Africa.semicolon.my_VotingApp.data.models.Post;
 import Africa.semicolon.my_VotingApp.data.models.Vote;
@@ -39,6 +41,20 @@ public class VoteServiceImpl implements VoteService {
         voteRepository.save(vote);
 
         return getVoteResponse(vote);
+
+    }
+
+    @Override
+    public CountVotesResponseDto countVotesByPostId(CountVotesRequestDto countVotesRequestDto) {
+        Post post = postRepository.findById(countVotesRequestDto.getPostId()).orElseThrow(()->new
+                GeneralServiceException("post not found"));
+
+        Long voteCount = voteRepository.countByPostId(countVotesRequestDto.getPostId());
+
+        CountVotesResponseDto countVotesResponseDto = new CountVotesResponseDto();
+        countVotesResponseDto.setPostId(post.getId());
+        countVotesResponseDto.setCount(voteCount);
+        return countVotesResponseDto;
 
     }
 
